@@ -231,9 +231,18 @@ Du musst nur die Empfänger-Regeln prüfen:
 
 ```ini
 OUTLOOK_MODE=send
-OUTLOOK_ALLOWED_RECIPIENT_DOMAINS=dension-dental.de
+OUTLOOK_ALLOWED_RECIPIENT_DOMAINS=
 OUTLOOK_ALLOWED_RECIPIENTS=
 OUTLOOK_CONFIRM_SEND=auto
+```
+
+So ausgeliefert sind beide Empfänger-Zeilen leer, es darf also an **jede** Adresse
+gesendet werden. Wer den Empfängerkreis einschränken will, trägt die eigenen Domains
+bzw. Adressen ein, zum Beispiel:
+
+```ini
+OUTLOOK_ALLOWED_RECIPIENT_DOMAINS=example.com,example.net
+OUTLOOK_ALLOWED_RECIPIENTS=steuerberater@example.net
 ```
 
 **Variante 1 (bestehende App, thelad):** zusätzlich diese vier Zeilen ausfüllen (ohne `#`):
@@ -257,7 +266,7 @@ Speichern in nano: **Strg+O**, **Enter**, dann beenden mit **Strg+X**.
 | `OUTLOOK_TENANT_ID` | Verzeichnis-ID (nur Variante 1/2) | leer lassen = Standard |
 | `OUTLOOK_CLIENT_SECRET` | Geheimer Schlüssel (nur Variante 1) | – |
 | `OUTLOOK_MODE` | Was darf die KI? `readonly` = nur lesen · `draft` = lesen + Entwürfe · `send` = auch senden | `send` |
-| `OUTLOOK_ALLOWED_RECIPIENT_DOMAINS` | An welche Firmen-Domains darf gesendet werden? Mehrere mit Komma trennen. | `dension-dental.de` |
+| `OUTLOOK_ALLOWED_RECIPIENT_DOMAINS` | An welche Firmen-Domains darf gesendet werden? Mehrere mit Komma trennen. | eigene Domain, z. B. `example.com` |
 | `OUTLOOK_ALLOWED_RECIPIENTS` | Zusätzlich erlaubte Einzeladressen, z. B. Steuerberater | nach Bedarf |
 | `OUTLOOK_CONFIRM_SEND` | Vor dem Senden nachfragen? (`auto` = ja, wenn das KI-Programm das kann) | `auto` |
 
@@ -274,7 +283,7 @@ Speichern in nano: **Strg+O**, **Enter**, dann beenden mit **Strg+X**.
 
 ```
 Modus:          send  (Rechte: User.Read, Mail.ReadWrite, Mail.Send)
-Empfänger:      dension-dental.de
+Empfänger:      alle erlaubt
 Bestätigung:    auto
 App:            Microsoft Graph Command Line Tools (Standard, keine Registrierung)
 Anmeldeart:     Browser bzw. Code (ohne Secret)
@@ -421,7 +430,7 @@ nicht beliebige Dateien von deinem Rechner.
 cp ~/Dokumente/Angebot.pdf ~/.local/share/lad-outlook-mcp/outbox/
 ```
 
-Dann zur KI: „Schreib eine Mail an kollege@dension-dental.de mit Angebot.pdf im Anhang.“
+Dann zur KI: „Schreib eine Mail an kollege@example.com mit Angebot.pdf im Anhang.“
 
 Weiterleitungen nehmen die Original-Anhänge automatisch mit. Dateien bis 150 MB sind möglich.
 

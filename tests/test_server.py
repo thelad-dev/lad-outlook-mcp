@@ -16,7 +16,7 @@ DRAFT = {
     "id": "draft/1=",
     "subject": "Angebot",
     "isDraft": True,
-    "toRecipients": [{"emailAddress": {"address": "kollege@dension-dental.de", "name": "Kollege"}}],
+    "toRecipients": [{"emailAddress": {"address": "kollege@example.com", "name": "Kollege"}}],
     "ccRecipients": [],
     "bccRecipients": [],
     "body": {"contentType": "text", "content": "Hallo"},
@@ -58,7 +58,7 @@ class FakeGraph:
 def make(tmp_path, fake, **env):
     cfg = Config.load({
         "OUTLOOK_CLIENT_ID": "cid", "OUTLOOK_TENANT_ID": "tid", "OUTLOOK_DATA_DIR": str(tmp_path),
-        "OUTLOOK_ALLOWED_RECIPIENT_DOMAINS": "dension-dental.de", **env,
+        "OUTLOOK_ALLOWED_RECIPIENT_DOMAINS": "example.com", **env,
     })
     graph = Graph(lambda: "token", transport=httpx.MockTransport(fake.handler))
     return cfg, build_server(cfg, graph)
@@ -113,7 +113,7 @@ def test_send_with_confirmation(tmp_path, mode):
     _, server = make(tmp_path, fake)
     res = run(call(server, "send_draft", {"draft_id": "draft/1="}, mode=mode, elicitation_callback=accept(True, asked)))
     assert not res.is_error, res.content
-    assert len(asked) == 1 and "kollege@dension-dental.de" in asked[0]
+    assert len(asked) == 1 and "kollege@example.com" in asked[0]
     assert len(fake.sends()) == 1  # genau einmal gesendet
 
 
@@ -147,7 +147,7 @@ def test_create_draft_with_outbox_attachment(tmp_path):
     cfg.outbox_dir.mkdir(parents=True)
     (cfg.outbox_dir / "angebot.pdf").write_bytes(b"%PDF-1.4 test")
     res = run(call(server, "create_draft", {
-        "to": ["kollege@dension-dental.de"], "subject": "Angebot", "body": "Anbei", "attachments": ["angebot.pdf"],
+        "to": ["kollege@example.com"], "subject": "Angebot", "body": "Anbei", "attachments": ["angebot.pdf"],
     }))
     assert not res.is_error, res.content
     att_posts = [c for c in fake.calls if c[0] == "POST" and c[1].endswith("/attachments")]
@@ -160,7 +160,7 @@ def test_create_draft_rejects_path_escape(tmp_path):
     _, server = make(tmp_path, fake)
     (tmp_path / "geheim.txt").write_text("x")
     res = run(call(server, "create_draft", {
-        "to": ["a@dension-dental.de"], "subject": "x", "body": "x", "attachments": ["../geheim.txt"],
+        "to": ["a@example.com"], "subject": "x", "body": "x", "attachments": ["../geheim.txt"],
     }))
     assert res.is_error
     assert not any(c[0] == "POST" for c in fake.calls)  # nicht einmal ein Entwurf angelegt
