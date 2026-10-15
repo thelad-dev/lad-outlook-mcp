@@ -18,14 +18,14 @@ def test_recipients_all_allowed_when_no_lists():
 
 
 def test_recipients_domain_and_address_whitelist():
-    domains = frozenset({"dension-dental.de"})
-    addresses = frozenset({"steuerberater@kanzlei.de"})
+    domains = frozenset({"example.com"})
+    addresses = frozenset({"steuerberater@example.net"})
     bad = recipient_violations(
-        ["X@Dension-Dental.de", "steuerberater@kanzlei.de", "evil@dension-dental.de.attacker.com", "a@sub.dension-dental.de"],
+        ["X@Example.Com", "steuerberater@example.net", "evil@example.com.attacker.test", "a@sub.example.com"],
         domains,
         addresses,
     )
-    assert bad == ["evil@dension-dental.de.attacker.com", "a@sub.dension-dental.de"]
+    assert bad == ["evil@example.com.attacker.test", "a@sub.example.com"]
 
 
 @pytest.mark.parametrize("addr", ["", "foo", "a@b", "a b@c.de", "<a@b.de>"])
